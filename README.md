@@ -27,8 +27,8 @@ For Deployement:
 
 To see the web app in action you can use these credentials :
 
-Username - dell56
-Password - Dell@5678
+Username - dell567
+Password - Dell@567
 
 Admin Username - aayush
 Admin Password -aayush
