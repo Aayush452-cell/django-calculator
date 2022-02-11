@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import UserProfile
 from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
 
 def home(request):
     if request.user.is_authenticated:
@@ -61,7 +62,14 @@ def user_profile(request, user_id):
     if request.user.is_authenticated:
         if request.method == 'POST':
             user_obj = User.objects.get(id=user_id)
-            user_profile_obj = UserProfile.objects.get(id=user_id)
+            user_profiles = UserProfile.objects.filter(profile_user=request.user)
+            instance = None
+            if user_profiles.count() == 0:
+                # user profile doesn't exist create one
+                instance = UserProfile.objects.create(profile_user=request.user)
+            else:
+                # user profile exists
+                instance = user_profiles.first()
             try:
                 user_img = request.FILES['user_img']
                 fs_handle = FileSystemStorage()
@@ -69,16 +77,25 @@ def user_profile(request, user_id):
                 if fs_handle.exists(img_name):
                     fs_handle.delete(img_name)
                 fs_handle.save(img_name, user_img)
-                user_profile_obj.profile_img = img_name
-                user_profile_obj.save()
-                user_profile_obj.refresh_from_db()
+                instance.profile_img = img_name
+                instance.save()
+                instance.refresh_from_db()
             except:
                 messages.add_message(request, messages.ERROR, "Unable to update image..")
-            return render(request, 'my_profile.html', {'my_profile': user_profile_obj})
+            return render(request, 'my_profile.html', {'my_profile': instance})
 
     if request.user.is_authenticated and request.user.id == user_id:
-        user_obj = User.objects.get(id=user_id)
-        user_profile = UserProfile.objects.get(id=user_id)
-        return render(request, 'my_profile.html', {'my_profile': user_profile })
+        try:
+            user_profiles = UserProfile.objects.filter(profile_user=request.user)
+            instance = None
+            if user_profiles.count() == 0:
+                # user profile doesn't exist create one
+                instance = UserProfile.objects.create(profile_user=request.user)
+            else:
+                # user profile exists
+                instance = user_profiles.first()
+            return render(request, 'my_profile.html', {'my_profile': instance})
+        except:
+            return HttpResponse("It looks like some issue is there! I will get back to you shortly !!!")
     else:
         return redirect('home')
