@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<h3>Hi {{ user.username }}</h3>
+<a href="{% url 'profile' user_id=user.id %}">my profile</a>
+<a href="{% url 'logout' %}">logout</a>
+
+
+    <h1>Calculator</h1>
+    <form id="calci">
+        {% csrf_token %}
+
+        Enter first number: <input type="text" id="num1" name="num1"><br><br>
+        Enter second number: <input type="text" id="num2" name="num2"><br><br>
+        <label for="opr">Choose a operator:</label>
+        <select name="opr" id="opr" id="opr">
+            <optgroup label="Operator">
+                <option value="ADD">Add</option>
+                <option value="SUB">Sub</option>
+                <option value="MUL">Mul</option>
+                <option value="DIV">Div</option>
+            </optgroup>
+        </select>
+        <input type="submit">
+        <div id="res">
+
+        </div>
+        <div>
+            <h2>Previous Calculations</h2>
+            <ul>
+                {% for calculate in calculations %}
+                   <li>{{ calculate.entries }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(document).on('submit', '#calci', function (e) {
+            console.log($("#opr").val())
+            e.preventDefault();
+            $.ajax({
+                type: 'GET',
+                url: '{% url "calci" %}',
+                data:
+                    {
+                        num1: $("#num1").val(),
+                        num2: $("#num2").val(),
+                        opr: $("#opr").val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                success: function (response) {
+                    $('#Result').remove()
+                    $('#res').prepend('<h1 id="Result"> Result = ' + response.result + '</h1>')
+                    $('ul').empty()
+                    $.each(response.calculations.reverse(), function(index, value) {
+                        var html = '<li>'+value.entries+'</li>';
+                        $('ul').append(html); // ul could also be a class of the list
+                    });
+                }
+            })
+        });
+
+    </script>
+
+{% endblock %}

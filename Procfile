@@ -1,0 +1,1 @@
+web: gunicorn Assingment_trans_org.wsgi
