@@ -35,3 +35,12 @@ Admin Password -aayush
 
 You can also create your own admin username and password by creating a new superuser and to do so just run this command 
 `python manage.py createsuperuser`
+
+![image](https://user-images.githubusercontent.com/68737300/153595116-b8e6008c-4ba4-409a-bd85-bb5dc217f8c2.png)
+
+![image](https://user-images.githubusercontent.com/68737300/153595200-a2decfc1-4207-4965-99de-c12528f67197.png)
+
+![image](https://user-images.githubusercontent.com/68737300/153595292-56bbb468-7fe5-4b90-9d0c-c0e1b9eb3847.png)
+
+
+
