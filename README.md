@@ -24,3 +24,14 @@ For Deployement:
 
 1) I have used `Heroku`
 2) I served my app using `gunicorn` .
+
+To see the web app in action you can use these credentials :
+
+Username - dell56
+Password - Dell@5678
+
+Admin Username - aayush
+Admin Password -aayush
+
+You can also create your own admin username and password by creating a new superuser and to do so just run this command 
+`python manage.py createsuperuser`
